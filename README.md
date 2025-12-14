@@ -43,24 +43,132 @@ FitHub/
 │   ├── js/            # JavaScript files
 │   ├── img/           # Images
 │   └── *.jsp          # JSP pages
+├── database_schema.sql # Database schema and sample data
 └── README.md
 ```
 
 ## Database Schema
 
 The application uses a MySQL database with the following tables:
-- `users` - Stores user information
-- `trainers` - Stores trainer information
-- `fitness_plans` - Stores fitness plans created by trainers
-- `subscriptions` - Tracks user subscriptions to fitness plans
-- `following` - Tracks user-followed trainer relationships
+
+### Users Table
+Stores user information for fitness enthusiasts:
+- `id` - Unique identifier
+- `username` - Unique username
+- `email` - Unique email address
+- `password_hash` - Hashed password
+- `first_name`, `last_name` - User's name
+- `date_of_birth` - User's date of birth
+- `gender` - Gender (Male/Female/Other)
+- `height`, `weight` - Physical measurements
+
+### Trainers Table
+Stores information for certified fitness trainers:
+- `id` - Unique identifier
+- `username` - Unique username
+- `email` - Unique email address
+- `password_hash` - Hashed password
+- `first_name`, `last_name` - Trainer's name
+- `certification` - Trainer's certifications
+- `experience_years` - Years of experience
+- `specialization` - Area of expertise
+- `bio` - Biography
+- `profile_image_url` - Link to profile image
+
+### Fitness Plans Table
+Stores fitness plans created by trainers:
+- `id` - Unique identifier
+- `trainer_id` - Foreign key to trainers table
+- `title` - Plan title
+- `description` - Detailed description
+- `price` - Cost to subscribe
+- `duration_days` - Plan duration in days
+- `difficulty_level` - Difficulty (Beginner/Intermediate/Advanced)
+- `category` - Type of fitness plan
+- `is_active` - Whether the plan is available
+
+### Subscriptions Table
+Tracks user subscriptions to fitness plans:
+- `id` - Unique identifier
+- `user_id` - Foreign key to users table
+- `plan_id` - Foreign key to fitness_plans table
+- `subscription_date` - Date subscription started
+- `expiry_date` - Date subscription expires
+- `is_active` - Whether subscription is active
+- `payment_status` - Status of payment
+- `amount_paid` - Amount paid for subscription
+
+### Following Table
+Tracks which trainers users are following:
+- `id` - Unique identifier
+- `user_id` - Foreign key to users table
+- `trainer_id` - Foreign key to trainers table
+- `followed_at` - Timestamp when followed
 
 ## Setup Instructions
 
-1. Clone the repository
-2. Set up MySQL database
-3. Configure database connection in `src/main/java/util/DBConnection.java`
-4. Deploy to a servlet container (Apache Tomcat, Jetty, etc.)
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/FlixBlackout/FitPlanHub.git
+   cd FitPlanHub
+   ```
+
+2. **Set up MySQL database**
+   - Install MySQL Server (version 5.7 or higher)
+   - Create a database user with appropriate permissions
+   - Execute the database schema:
+     ```sql
+     mysql -u root -p < database_schema.sql
+     ```
+
+3. **Configure database connection**
+   - Open `src/main/java/util/DBConnection.java`
+   - Update the database credentials if needed:
+     ```java
+     private static final String URL = "jdbc:mysql://localhost:3306/fitplanhub";
+     private static final String USERNAME = "root";
+     private static final String PASSWORD = "your_password";
+     ```
+
+4. **Add MySQL JDBC Driver**
+   - Download MySQL Connector/J (version 8.0 or higher)
+   - Add the JAR file to your project's classpath or WEB-INF/lib folder
+
+5. **Deploy to a servlet container**
+   - Package the project as a WAR file or deploy directly to Apache Tomcat (version 9.0 or higher)
+   - Start the Tomcat server
+   - Access the application at `http://localhost:8080/FitHub`
+
+## Running the Application
+
+1. **Prerequisites**
+   - Java JDK 8 or higher
+   - Apache Tomcat 9.0 or higher
+   - MySQL Server 5.7 or higher
+   - MySQL Connector/J JDBC driver
+
+2. **Database Setup**
+   ```bash
+   # Connect to MySQL
+   mysql -u root -p
+   
+   # Create and populate the database
+   source database_schema.sql
+   ```
+
+3. **Application Deployment**
+   - Build the project using your preferred IDE or build tool
+   - Deploy the generated WAR file to Tomcat's webapps directory
+   - Start Tomcat server
+   - Navigate to `http://localhost:8080/FitHub` in your browser
+
+4. **Default Test Accounts**
+   - User Account:
+     - Email: john@example.com
+     - Password: (Use the hash stored in DB)
+   - Trainer Account:
+     - Email: mike@fitness.com
+     - Password: (Use the hash stored in DB)
 
 ## Contributing
 
